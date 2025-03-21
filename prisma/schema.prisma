@@ -1,0 +1,168 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String          @id @default(cuid())
+  name            String
+  email           String          @unique
+  phone           String?    
+  password        String
+  userType        UserType        @default(SEEKER)
+  lastLoginAt     DateTime?
+  properties      Property[]      // Properties owned by this user (if OWNER)
+  savedProperties SavedProperty[] // Properties saved by this user (if SEEKER)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([email])
+  @@index([userType])
+}
+
+enum UserType {
+  SEEKER
+  OWNER
+}
+
+model Property {
+  id             String          @id @default(cuid())
+  title          String
+  description    String
+  type           PropertyType    @default(PG)
+  status         PropertyStatus  @default(ACTIVE)
+  price          Float?          // Only for FLAT type
+  location       String
+  googleAddress  String?         // Formatted address from Google
+  latitude       Float?
+  longitude      Float?
+  rooms          Int             @default(1)
+  bathrooms      Int             @default(1)
+  furnished      Boolean         @default(false)
+  available      DateTime        @default(now())
+  amenities      String[]        // Array of amenities
+  rules          String[]        // Array of rules
+
+  // Owner relation - crucial for authorization
+  ownerId        String
+  owner          User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  // Related data
+  address        Address?        // One-to-one relation with address
+  images         Image[]         // One-to-many relation with images
+  sharingOptions SharingOption[] // One-to-many relation with sharing options (for PG)
+  inquiries      Inquiry[]       // One-to-many relation with inquiries
+  savedBy        SavedProperty[] // Many-to-many relation with users who saved this property
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([type])
+  @@index([status])
+  @@index([ownerId]) // Important for filtering properties by owner
+  @@index([location])
+}
+
+enum PropertyType {
+  PG
+  FLAT
+}
+
+enum PropertyStatus {
+  ACTIVE
+  INACTIVE
+  RENTED
+}
+
+model Address {
+  id          String    @id @default(cuid())
+  street      String
+  city        String
+  state       String
+  pincode     String
+  propertyId  String    @unique // One-to-one relation with property
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([city])
+  @@index([propertyId])
+}
+
+model Image {
+  id         String    @id @default(cuid())
+  url        String
+  publicId   String?   // For cloud storage reference
+  isMain     Boolean   @default(false)
+  propertyId String
+  property   Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+
+  @@index([propertyId])
+}
+
+model SharingOption {
+  id          String    @id @default(cuid())
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  persons     Int       // Number of persons (2,3,4 etc.)
+  price       Float     // Price per person
+  available   Int       // Number of beds available
+  total       Int       // Total beds in this sharing type
+  inquiries   Inquiry[] // Related inquiries for this sharing option
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([propertyId])
+  @@index([persons])
+  @@index([price])
+}
+
+model Inquiry {
+  id              String        @id @default(cuid())
+  propertyId      String
+  property        Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  sharingOptionId String?      // Optional, only for PG inquiries
+  sharingOption   SharingOption? @relation(fields: [sharingOptionId], references: [id])
+  name            String
+  email           String
+  phone           String?
+  message         String
+  visitDate       DateTime?    // Optional preferred visit date
+  status          InquiryStatus @default(PENDING)
+  response        String?      // Owner's response
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([propertyId])
+  @@index([email])
+  @@index([status])
+  @@index([sharingOptionId])
+}
+
+enum InquiryStatus {
+  PENDING
+  RESPONDED
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+model SavedProperty {
+  id         String   @id @default(cuid())
+  userId     String
+  propertyId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId]) // Prevent duplicate saves
+  @@index([userId])
+  @@index([propertyId])
+}
