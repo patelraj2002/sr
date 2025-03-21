@@ -22,27 +22,15 @@ export default function PropertyActions({
 
     setLoading(true);
     try {
-      const method = isSaved ? 'DELETE' : 'POST';
-      const response = await fetch(
-        `/api/users/${userId}/saved-properties/${property.id}`,
-        {
-          method,
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
+      const response = await fetch(`/api/users/${userId}/saved-properties/${property.id}`, {
+        method: isSaved ? 'DELETE' : 'POST',
+      });
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || (isSaved ? 'Failed to unsave property' : 'Failed to save property'));
+      if (response.ok) {
+        setIsSaved(!isSaved);
       }
-
-      setIsSaved(!isSaved);
-
     } catch (error) {
       console.error('Error saving property:', error);
-      alert(error.message);
     } finally {
       setLoading(false);
     }
@@ -60,37 +48,72 @@ export default function PropertyActions({
   }
 
   return (
-    <div className="space-y-3">
-      {isAuthenticated ? (
-        <>
-          <button
-            onClick={handleSaveProperty}
-            disabled={loading}
-            className={`w-full px-4 py-2 ${
-              isSaved 
-                ? 'bg-primary-100 text-primary-700 hover:bg-primary-200'
-                : 'bg-white text-primary-600 hover:bg-primary-50'
-            } border border-primary-600 rounded-md transition-colors ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            {loading ? 'Processing...' : (isSaved ? 'Saved' : 'Save Property')}
-          </button>
-          <Link
-            href={`/inquiries/new?propertyId=${property.id}`}
-            className="w-full px-4 py-2 bg-primary-600 text-white text-center rounded-md hover:bg-primary-700 block"
-          >
-            Make Inquiry
-          </Link>
-        </>
-      ) : (
-        <Link
-          href={`/auth/signin?redirect=/properties/${property.id}`}
-          className="w-full px-4 py-2 bg-primary-600 text-white text-center rounded-md hover:bg-primary-700 block"
-        >
-          Sign in to Inquire
-        </Link>
-      )}
+    <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 space-y-4">
+      <div className="flex flex-col gap-3">
+        {isOwner ? (
+          <>
+            <button
+              onClick={handleEditClick}
+              className="w-full px-4 py-2 bg-primary-600 text-white rounded-md
+                hover:bg-primary-700 transition-colors text-sm sm:text-base font-medium"
+            >
+              Edit Property
+            </button>
+            {property.latitude && property.longitude && (
+              <GetDirections
+                latitude={property.latitude}
+                longitude={property.longitude}
+                address={property.googleAddress || property.location}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            <button
+              onClick={handleInquiryClick}
+              disabled={loading}
+              className="w-full px-4 py-2 bg-primary-600 text-white rounded-md
+                hover:bg-primary-700 transition-colors text-sm sm:text-base font-medium
+                disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Send Inquiry
+            </button>
+            <button
+              onClick={handleSaveClick}
+              disabled={loading || !isAuthenticated}
+              className={`w-full px-4 py-2 rounded-md transition-colors
+                text-sm sm:text-base font-medium flex items-center justify-center gap-2
+                ${isSaved 
+                  ? 'bg-primary-50 text-primary-600 hover:bg-primary-100' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }
+                disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              <svg 
+                className="w-5 h-5" 
+                fill={isSaved ? "currentColor" : "none"} 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
+                />
+              </svg>
+              {isSaved ? 'Saved' : 'Save Property'}
+            </button>
+            {property.latitude && property.longitude && (
+              <GetDirections
+                latitude={property.latitude}
+                longitude={property.longitude}
+                address={property.googleAddress || property.location}
+              />
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

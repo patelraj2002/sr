@@ -85,238 +85,176 @@ export const CITIES_BY_STATE = {
   ]
 };
   
-  export const AREAS_BY_CITY = {
-    ' ': [
+export const AREAS_BY_CITY = {
+  'Ahmedabad': [
     // West Ahmedabad
     'Satellite', 'Bodakdev', 'Vastrapur', 'South Bopal', 'Bopal', 
     'Prahlad Nagar', 'Thaltej', 'Science City', 'Jodhpur', 'Ambli',
     'Sindhu Bhavan Road', 'Hebatpur', 'Shela', 'Ambawadi', 'Paldi',
+    'SG Highway', 'Sola', 'Gota', 'South Bopal', 'Manipur',
 
     // Central Ahmedabad
     'Navrangpura', 'CG Road', 'Law Garden', 'Ellis Bridge', 'Ashram Road',
     'Lal Darwaja', 'Relief Road', 'Panchvati', 'Usmanpura', 'Stadium Road',
-    
+    'Income Tax', 'Shahibaug', 'Gujarat College', 'Parimal Garden', 'University Area',
+
     // North Ahmedabad
     'Motera', 'Chandkheda', 'Sabarmati', 'Gota', 'Nirnaynagar',
     'Ranip', 'New Ranip', 'Vadaj', 'Nava Vadaj', 'Dharamnagar',
-    
+    'New CG Road', 'Visat', 'Tragad', 'Chanakyapuri', 'Hanspura',
+
     // East Ahmedabad
     'Naroda', 'Nikol', 'Vastral', 'Ramol', 'Odhav',
     'Krishnanagar', 'Bapunagar', 'Rakhial', 'Gomtipur', 'Amraiwadi',
-    
+    'CTM', 'Vastral', 'Hathijan', 'Viratnagar', 'Hirawadi',
+
     // South Ahmedabad
     'Maninagar', 'Khokhra', 'Isanpur', 'Vatva', 'Ghodasar',
-    'Vishala', 'Vejalpur', 'Juhapura', 'Sarkhej', 'Lambha'
+    'Vishala', 'Vejalpur', 'Juhapura', 'Sarkhej', 'Lambha',
+    'Narol', 'Jasodanagar', 'Vatva GIDC', 'Hatkeshwar', 'Kankaria'
+  ],
+
+  'Gandhinagar': [
+    'Sector 1', 'Sector 2', 'Sector 3', 'Sector 4', 'Sector 5',
+    'Sector 6', 'Sector 7', 'Sector 8', 'Sector 9', 'Sector 10',
+    'Sector 11', 'Sector 12', 'Sector 13', 'Sector 14', 'Sector 15',
+    'Sector 16', 'Sector 17', 'Sector 19', 'Sector 20', 'Sector 21',
+    'Sector 22', 'Sector 23', 'Sector 24', 'Sector 25', 'Sector 26',
+    'Sector 27', 'Sector 28', 'Sector 29', 'Sector 30', 'GIFT City',
+    'Infocity', 'Kudasan', 'Sargasan', 'Pethapur', 'Raysan',
+    'Koba', 'Vavol', 'Uvarsad', 'Adalaj', 'Randesan'
+  ],
+
+  'Surat': [
+    // Central Surat
+    'Athwa', 'City Light', 'Piplod', 'Ghod Dod Road', 'Ring Road',
+    'Adajan', 'Pal', 'Rander', 'Katargam', 'Varachha',
+    'Majura Gate', 'Udhna', 'Sachin', 'Bhatar', 'Althan',
+
+    // New Surat
+    'Vesu', 'Dumas Road', 'Magdalla', 'Palanpur Patia', 'New City Light',
+    'Jahangirpura', 'Bamroli', 'Dindoli', 'Magob', 'Kosad',
+
+    // Industrial Areas
+    'Hazira', 'Sachin GIDC', 'Pandesara', 'Udhna Udhyognagar', 'Katargam GIDC',
+    'Amroli', 'Olpad', 'Bhestan', 'Kamrej', 'Limbayat'
+  ],
+
+  'Vadodara': [
+    // Central Areas
+    'Alkapuri', 'Race Course', 'Fatehgunj', 'Sayajigunj', 'Dandia Bazaar',
+    'Raopura', 'Mandvi', 'Kevdabaug', 'Madhavpura', 'Panigate',
+
+    // New Vadodara
+    'Karelibaug', 'Akota', 'Gorwa', 'Subhanpura', 'Vasna',
+    'Gotri', 'Manjalpur', 'Sama', 'Nizampura', 'Waghodia Road',
+
+    // Outer Areas
+    'Tandalja', 'Makarpura', 'Harni', 'Tarsali', 'Chhani',
+    'Bill', 'Bhayli', 'Sevasi', 'Vadsar', 'Kalali'
+  ],
+
+  'Rajkot': [
+    // Central Areas
+    'Race Course Ring Road', 'Kalawad Road', 'University Road', 'Yagnik Road', 'Astron Chowk',
+    'Sadhu Vaswani Road', 'Gondal Road', 'Mavdi', '150 Feet Ring Road', 'Jawahar Road',
+
+    // Residential Areas
+    'Amin Marg', 'Nana Mava', 'Raiya Road', 'Jamnagar Road', 'Morbi Road',
+    'Kotecha Chowk', 'Raiya Circle', 'Gandhigram', 'Sorathiyawadi', 'Kuvadva Road',
+
+    // New Development
+    'Vidyanagar', 'Bhaktinagar', 'Rashulgadh', 'Vajdi', 'Pedak Road',
+    'Akshar Marg', 'Indira Circle', 'Sadhu Vaswani Road', 'Neel City', 'Mota Mava'
   ],
 
   'Mumbai': [
-    // Western Suburbs
-    'Andheri East', 'Andheri West', 'Bandra East', 'Bandra West', 'Borivali East',
-    'Borivali West', 'Goregaon East', 'Goregaon West', 'Jogeshwari East', 'Jogeshwari West',
-    'Kandivali East', 'Kandivali West', 'Malad East', 'Malad West', 'Santacruz East',
-    'Santacruz West', 'Vile Parle East', 'Vile Parle West', 'Powai', 'Khar West',
-    'Khar East', 'Juhu', 'Versova', 'Lokhandwala', 'Oshiwara',
-    
-    // Central Mumbai
-    'Dadar East', 'Dadar West', 'Mahim', 'Matunga East', 'Matunga West',
-    'Parel', 'Lower Parel', 'Worli', 'Prabhadevi', 'Byculla',
-    'Sion', 'Wadala', 'Kings Circle', 'Hindamata', 'Curry Road',
-    
     // South Mumbai
-    'Colaba', 'Churchgate', 'Fort', 'Marine Lines', 'Marine Drive',
-    'Nariman Point', 'Breach Candy', 'Malabar Hill', 'Peddar Road', 'Tardeo',
-    'Mumbai Central', 'Grant Road', 'Opera House', 'Girgaon', 'Kalbadevi',
-    
+    'Colaba', 'Churchgate', 'Fort', 'Marine Drive', 'Nariman Point',
+    'Cuffe Parade', 'Malabar Hill', 'Tardeo', 'Worli', 'Lower Parel',
+
+    // Western Suburbs
+    'Bandra West', 'Khar West', 'Santacruz West', 'Juhu', 'Andheri West',
+    'Versova', 'Goregaon West', 'Malad West', 'Kandivali West', 'Borivali West',
+
     // Eastern Suburbs
-    'Chembur', 'Ghatkopar East', 'Ghatkopar West', 'Kurla East', 'Kurla West',
-    'Mulund East', 'Mulund West', 'Vikhroli East', 'Vikhroli West', 'Bhandup',
-    'Kanjurmarg', 'Nahur', 'Vidyavihar', 'Govandi', 'Mankhurd'
+    'Kurla', 'Ghatkopar', 'Vikhroli', 'Bhandup', 'Mulund',
+    'Powai', 'Chembur', 'Wadala', 'Sion', 'Matunga',
+
+    // Central Mumbai
+    'Dadar', 'Mahim', 'Matunga', 'Parel', 'Lalbaug',
+    'Byculla', 'Mumbai Central', 'Grant Road', 'Charni Road', 'Opera House'
+  ],
+
+  'Pune': [
+    // Central Pune
+    'Shivaji Nagar', 'Deccan Gymkhana', 'FC Road', 'JM Road', 'Camp',
+    'Koregaon Park', 'Kalyani Nagar', 'Yerawada', 'Pune Station', 'Swargate',
+
+    // West Pune
+    'Aundh', 'Baner', 'Pashan', 'Bavdhan', 'Wakad',
+    'Hinjewadi', 'Balewadi', 'Sus', 'Mahalunge', 'Pimple Saudagar',
+
+    // East Pune
+    'Viman Nagar', 'Kharadi', 'Wagholi', 'Hadapsar', 'Magarpatta',
+    'Mundhwa', 'Chandannagar', 'Wadgaon Sheri', 'Dhanori', 'Vishrantwadi',
+
+    // South Pune
+    'Katraj', 'Kondhwa', 'NIBM', 'Undri', 'Mohammadwadi',
+    'Bibwewadi', 'Sahakarnagar', 'Parvati', 'Dhankawadi', 'Market Yard'
   ],
 
   'Bangalore': [
     // Central Bangalore
-    'MG Road', 'Brigade Road', 'Commercial Street', 'Lavelle Road', 'Richmond Road',
-    'Residency Road', 'Cunningham Road', 'Infantry Road', 'Church Street', 'St. Marks Road',
-    'Vittal Mallya Road', 'Kasturba Road', 'Race Course Road', 'Shivajinagar', 'Richmond Town',
-    
+    'MG Road', 'Brigade Road', 'Commercial Street', 'Residency Road', 'Richmond Road',
+    'Lavelle Road', 'Church Street', 'Infantry Road', 'Vasanth Nagar', 'Shivaji Nagar',
+
     // East Bangalore
-    'Whitefield', 'ITPL', 'Marathahalli', 'Brookefield', 'Kadugodi',
-    'Varthur', 'Doddanekundi', 'CV Raman Nagar', 'Old Airport Road', 'Indiranagar',
-    'HAL Airport Road', 'Mahadevapura', 'KR Puram', 'Hoodi', 'Channasandra',
-    
+    'Whitefield', 'Marathahalli', 'Brookefield', 'KR Puram', 'Mahadevapura',
+    'CV Raman Nagar', 'Old Airport Road', 'Indiranagar', 'HAL', 'Hoodi',
+
     // South Bangalore
     'Koramangala', 'HSR Layout', 'BTM Layout', 'JP Nagar', 'Jayanagar',
-    'Bannerghatta Road', 'Electronic City', 'Silk Board', 'Bommanahalli', 'Begur',
-    'Hulimavu', 'Kumaraswamy Layout', 'Banashankari', 'Basavanagudi', 'Wilson Garden',
-    
-    // North Bangalore
-    'Hebbal', 'Yelahanka', 'Jakkur', 'Hennur', 'Thanisandra',
-    'Sahakara Nagar', 'RT Nagar', 'Kalyan Nagar', 'HBR Layout', 'Nagawara',
-    'Dollars Colony', 'RMV Extension', 'Bellary Road', 'Kogilu', 'Vidyaranyapura',
-    
-    // West Bangalore
-    'Malleshwaram', 'Rajajinagar', 'Vijayanagar', 'Basaveshwara Nagar', 'Mahalakshmi Layout',
-    'Yeswanthpur', 'Peenya', 'Nagarbhavi', 'Kengeri', 'RR Nagar',
-    'Uttarahalli', 'Banashankari Stage II', 'Srinagar', 'Padmanabhanagar', 'Chandra Layout'
-  ],
+    'Bannerghatta Road', 'Electronic City', 'Sarjapur Road', 'Bommanahalli', 'Wilson Garden',
 
-  'Hyderabad': [
-    // Hi-Tech Zone
-    'HITEC City', 'Madhapur', 'Gachibowli', 'Nanakramguda', 'Financial District',
-    'Kondapur', 'Kothaguda', 'Manikonda', 'Raidurg', 'Kukatpally',
-    'Nizampet', 'Bachupally', 'Miyapur', 'Hafeezpet', 'Chandanagar',
-    
-    // Central Hyderabad
-    'Banjara Hills', 'Jubilee Hills', 'Somajiguda', 'Ameerpet', 'Punjagutta',
-    'Khairatabad', 'Lakdikapul', 'Mehdipatnam', 'Masab Tank', 'Asifnagar',
-    'Nampally', 'Abids', 'Koti', 'Himayatnagar', 'Basheerbagh',
-    
-    // Secunderabad
-    'Secunderabad', 'Paradise', 'Begumpet', 'Bowenpally', 'Trimulgherry',
-    'Maredpally', 'Tarnaka', 'Nacharam', 'Moula Ali', 'Neredmet',
-    'AS Rao Nagar', 'Sainikpuri', 'Defence Colony', 'Alwal', 'Bolarum',
-    
-    // East Hyderabad
-    'Uppal', 'LB Nagar', 'Dilsukhnagar', 'Vanasthalipuram', 'Hayathnagar',
-    'Nagole', 'Boduppal', 'Peerzadiguda', 'Ramanthapur', 'Habsiguda',
-    'Nacharam', 'Mallapur', 'Cherlapally', 'Dammaiguda', 'Kushaiguda',
-    
-    // North Hyderabad
-    'Kompally', 'Jeedimetla', 'Balanagar', 'Medchal', 'Alwal',
-    'Quthbullapur', 'Shamirpet', 'Gundlapochampally', 'Kapra', 'ECIL'
+    // North Bangalore
+    'Hebbal', 'Yelahanka', 'Devanahalli', 'Hennur', 'RT Nagar',
+    'Sahakara Nagar', 'Thanisandra', 'Jakkur', 'Kogilu', 'Bellary Road'
   ],
 
   'Chennai': [
     // Central Chennai
-    'T Nagar', 'Nungambakkam', 'Egmore', 'Mylapore', 'Royapettah',
-    'Alwarpet', 'Teynampet', 'Kilpauk', 'Purasawalkam', 'Choolai',
-    'Triplicane', 'Chepauk', 'Mount Road', 'Thousand Lights', 'Gopalapuram',
-    
-    // North Chennai
-    'Anna Nagar', 'Anna Nagar West', 'Ayanavaram', 'Kolathur', 'Perambur',
-    'Tondiarpet', 'Washermanpet', 'Madhavaram', 'Red Hills', 'Tiruvottiyur',
-    'Manali', 'Ennore', 'Kodungaiyur', 'Royapuram', 'Vyasarpadi',
-    
+    'T Nagar', 'Nungambakkam', 'Egmore', 'Mylapore', 'Alwarpet',
+    'Royapettah', 'Teynampet', 'Anna Nagar', 'Kilpauk', 'Vadapalani',
+
     // South Chennai
-    'Adyar', 'Velachery', 'Guindy', 'Madipakkam', 'Pallikaranai',
-    'Nanganallur', 'Thoraipakkam', 'Tambaram', 'Chromepet', 'Pallavaram',
-    'Keelkattalai', 'Medavakkam', 'Sholinganallur', 'Navalur', 'Siruseri',
-    
+    'Adyar', 'Velachery', 'Guindy', 'Madipakkam', 'Tambaram',
+    'Pallavaram', 'Chromepet', 'Medavakkam', 'Sholinganallur', 'Perungudi',
+
+    // North Chennai
+    'Tondiarpet', 'Washermenpet', 'Royapuram', 'Perambur', 'Kolathur',
+    'Madhavaram', 'Manali', 'Thiruvottiyur', 'Red Hills', 'Ponneri',
+
     // West Chennai
-    'Porur', 'Vadapalani', 'KK Nagar', 'Virugambakkam', 'Saligramam',
-    'Valasaravakkam', 'Alwarthirunagar', 'Poonamallee', 'Iyyappanthangal', 'Alapakkam',
-    'Mugalivakkam', 'Maduravoyal', 'Koyambedu', 'Aminjikarai', 'Arumbakkam',
-    
-    // IT Corridor (OMR)
-    'OMR Road', 'Perungudi', 'Taramani', 'Karapakkam', 'Padur',
-    'Kelambakkam', 'Egattur', 'Siruseri IT Park', 'Navallur', 'Thalambur'
+    'Porur', 'Ambattur', 'Poonamallee', 'Mogappair', 'Maduravoyal',
+    'Valasaravakkam', 'Thirumangalam', 'Koyambedu', 'Virugambakkam', 'Alapakkam'
   ],
-  'Delhi NCR': {
-  'Central Delhi': [
-    'Connaught Place', 'Karol Bagh', 'Paharganj', 'Rajendra Place',
-    'Patel Nagar', 'Rajiv Chowk', 'ITO', 'Delhi Gate', 'Darya Ganj',
-    'Chandni Chowk', 'Civil Lines', 'Kashmere Gate'
-  ],
-  'South Delhi': [
-    'Defence Colony', 'Lajpat Nagar', 'Greater Kailash', 'Saket',
-    'Hauz Khas', 'Green Park', 'South Extension', 'Malviya Nagar',
-    'Mehrauli', 'Chhatarpur', 'Vasant Kunj', 'Vasant Vihar',
-    'R K Puram', 'Safdarjung', 'Nehru Place'
-  ],
-  'East Delhi': [
-    'Laxmi Nagar', 'Preet Vihar', 'Anand Vihar', 'Shahdara',
-    'Mayur Vihar', 'Patparganj', 'Vaishali', 'Indirapuram',
-    'Krishna Nagar', 'Dilshad Garden', 'Vivek Vihar'
-  ],
-  'West Delhi': [
-    'Rajouri Garden', 'Janakpuri', 'Paschim Vihar', 'Punjabi Bagh',
-    'Kirti Nagar', 'Moti Nagar', 'Dwarka', 'Uttam Nagar',
-    'Vikaspuri', 'Tilak Nagar'
-  ],
-  'North Delhi': [
-    'Model Town', 'Ashok Vihar', 'Pitampura', 'Rohini',
-    'Shalimar Bagh', 'Azadpur', 'Adarsh Nagar', 'GTB Nagar',
-    'Mukherji Nagar', 'Shakti Nagar'
-  ],
-  'Gurgaon': [
-    'DLF Phase 1', 'DLF Phase 2', 'DLF Phase 3', 'DLF Phase 4',
-    'Sushant Lok', 'Golf Course Road', 'MG Road', 'Cyber City',
-    'Sohna Road', 'Sector 14', 'Sector 15', 'Sector 56',
-    'Golf Course Extension Road', 'Udyog Vihar'
-  ],
-  'Noida': [
-    'Sector 15', 'Sector 16', 'Sector 18', 'Sector 62',
-    'Sector 63', 'Sector 125', 'Sector 127', 'Sector 132',
-    'Sector 135', 'Sector 142', 'Sector 144', 'Sector 168'
-  ]
-},
 
-'Pune': {
-  'Central Pune': [
-    'Shivaji Nagar', 'Deccan Gymkhana', 'FC Road', 'JM Road',
-    'Camp', 'Koregaon Park', 'Kalyani Nagar', 'Yerawada'
-  ],
-  'West Pune': [
-    'Aundh', 'Baner', 'Pashan', 'Bavdhan', 'Wakad',
-    'Hinjewadi', 'Balewadi', 'Sus', 'Mahalunge'
-  ],
-  'East Pune': [
-    'Viman Nagar', 'Kharadi', 'Wagholi', 'Hadapsar',
-    'Magarpatta', 'Mundhwa', 'Chandannagar'
-  ],
-  'South Pune': [
-    'Katraj', 'Kondhwa', 'NIBM', 'Undri', 'Mohammadwadi',
-    'Bibwewadi', 'Sahakarnagar', 'Parvati'
-  ],
-  'North Pune': [
-    'Dhanori', 'Vishrantwadi', 'Lohegaon', 'Tingre Nagar',
-    'Chandan Nagar', 'Moshi', 'Bhosari'
-  ]
-},
+  'Hyderabad': [
+    // Central Hyderabad
+    'Banjara Hills', 'Jubilee Hills', 'Punjagutta', 'Ameerpet', 'Begumpet',
+    'Somajiguda', 'Himayatnagar', 'Nampally', 'Abids', 'Koti',
 
-'Kolkata': {
-  'North Kolkata': [
-    'Shyambazar', 'Bagbazar', 'Sovabazar', 'Ultadanga',
-    'Maniktala', 'Dumdum', 'Lake Town', 'Belgachia'
-  ],
-  'South Kolkata': [
-    'Ballygunge', 'Alipore', 'Bhowanipore', 'Tollygunge',
-    'Jadavpur', 'Jodhpur Park', 'Gariahat', 'Dhakuria'
-  ],
-  'Central Kolkata': [
-    'Park Street', 'Esplanade', 'Entally', 'Sealdah',
-    'Chandni Chowk', 'Burrabazar', 'Bowbazar'
-  ],
-  'East Kolkata': [
-    'Salt Lake', 'New Town', 'Rajarhat', 'EM Bypass',
-    'Kasba', 'Anandapur', 'Ruby'
-  ],
-  'West Kolkata': [
-    'Behala', 'Joka', 'Thakurpukur', 'Barisha',
-    'Khidirpur', 'Watgunge', 'Maheshtala'
-  ]
-},
+    // IT Corridor
+    'HITEC City', 'Madhapur', 'Gachibowli', 'Kondapur', 'Nanakramguda',
+    'Financial District', 'Raidurg', 'Manikonda', 'Khajaguda', 'Narsingi',
 
-'Jaipur': {
-  'Central Jaipur': [
-    'MI Road', 'Tonk Road', 'C-Scheme', 'Civil Lines',
-    'Bani Park', 'Adarsh Nagar', 'Tilak Nagar'
-  ],
-  'West Jaipur': [
-    'Vaishali Nagar', 'Mansarovar', 'Pratap Nagar',
-    'Gopalpura', 'Malviya Nagar', 'Jagatpura'
-  ],
-  'East Jaipur': [
-    'Raja Park', 'Bapu Nagar', 'Jawahar Nagar',
-    'Malviya Nagar', 'Durgapura', 'Sanganer'
-  ],
-  'South Jaipur': [
-    'Mahesh Nagar', 'Jawahar Circle', 'Sitapura',
-    'Muhana', 'Sanganer', 'Pratap Nagar'
-  ],
-  'North Jaipur': [
-    'Amer Road', 'Jhotwara', 'Vidhyadhar Nagar',
-    'Sikar Road', 'Murlipura', 'Chitrakoot'
+    // New Development
+    'Kukatpally', 'Miyapur', 'Chandanagar', 'Nallagandla', 'Tellapur',
+    'Nizampet', 'Bachupally', 'Kompally', 'Medchal', 'Alwal',
+
+    // East Hyderabad
+    'Secunderabad', 'Uppal', 'LB Nagar', 'Dilsukhnagar', 'Nacharam',
+    'Malakpet', 'Tarnaka', 'Malkajgiri', 'AS Rao Nagar', 'Habsiguda'
   ]
-}
 };

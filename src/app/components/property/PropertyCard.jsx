@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import GetDirections from './GetDirections';
 
 export default function PropertyCard({ 
   property, 
@@ -134,40 +135,58 @@ export default function PropertyCard({
 
         {/* Actions */}
         <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
-          {isOwner ? (
-            <>
-              <Link
-                href={`/properties/${property.id}`}
-                className="text-primary-600 hover:text-primary-700 text-sm sm:text-base font-medium transition-colors"
-              >
-                View Details
-              </Link>
-              <span className="text-xs sm:text-sm text-gray-500">
-                {property.inquiries?.length || 0} inquiries
-              </span>
-            </>
-          ) : (
-            <>
-              <Link
-                href={`/properties/${property.id}`}
-                className="text-primary-600 hover:text-primary-700 text-sm sm:text-base font-medium transition-colors"
-              >
-                View Details
-              </Link>
-              <button
-                onClick={() => onInquiryClick?.(property)}
-                disabled={loading}
-                className={`w-full sm:w-auto px-4 py-2 bg-primary-600 text-white rounded-md
-                  hover:bg-primary-700 active:scale-95 transition-all duration-200
-                  text-sm sm:text-base font-medium
-                  ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
-              >
-                {loading ? 'Processing...' : 'Inquire Now'}
-              </button>
-            </>
-          )}
-        </div>
+  {isOwner ? (
+    <>
+      <Link
+        href={`/properties/${property.id}`}
+        className="text-primary-600 hover:text-primary-700 text-sm sm:text-base font-medium transition-colors"
+      >
+        View Details
+      </Link>
+      <div className="flex items-center gap-3">
+        {property.latitude && property.longitude && (
+          <GetDirections
+            latitude={property.latitude}
+            longitude={property.longitude}
+            address={property.googleAddress || property.location}
+          />
+        )}
+        <span className="text-xs sm:text-sm text-gray-500">
+          {property.inquiries?.length || 0} inquiries
+        </span>
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="flex items-center gap-3">
+        <Link
+          href={`/properties/${property.id}`}
+          className="text-primary-600 hover:text-primary-700 text-sm sm:text-base font-medium transition-colors"
+        >
+          View Details
+        </Link>
+        {property.latitude && property.longitude && (
+          <GetDirections
+            latitude={property.latitude}
+            longitude={property.longitude}
+            address={property.googleAddress || property.location}
+          />
+        )}
+      </div>
+      <button
+        onClick={() => onInquiryClick?.(property)}
+        disabled={loading}
+        className={`w-full sm:w-auto px-4 py-2 bg-primary-600 text-white rounded-md
+          hover:bg-primary-700 active:scale-95 transition-all duration-200
+          text-sm sm:text-base font-medium
+          ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
+      >
+        {loading ? 'Processing...' : 'Inquire Now'}
+      </button>
+    </>
+  )}
+</div>
       </div>
     </div>
   );

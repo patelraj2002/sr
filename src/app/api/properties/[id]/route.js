@@ -1,10 +1,11 @@
 // src/app/api/properties/[id]/route.js
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
-import { getServerSession } from '@/app/utils/auth';
+import { getServerSession } from '@/app/utils/serverAuth'; // Updated import
 
 export async function GET(request, { params }) {
   try {
+    const session = await getServerSession();
     const { id } = params;
 
     const property = await prisma.property.findUnique({
@@ -19,8 +20,12 @@ export async function GET(request, { params }) {
             phone: true
           }
         },
+        sharingOptions: {
+          orderBy: {
+            persons: 'asc'
+          }
+        },
         address: true,
-        sharingOptions: true,
         inquiries: true
       }
     });
@@ -32,12 +37,36 @@ export async function GET(request, { params }) {
       );
     }
 
-    return NextResponse.json(property);
+    // Check if the property is saved by the current user
+    let isSaved = false;
+    if (session && session.id !== property.ownerId) {
+      const savedProperty = await prisma.savedProperty.findUnique({
+        where: {
+          userId_propertyId: {
+            userId: session.id,
+            propertyId: id
+          }
+        }
+      });
+      isSaved = !!savedProperty;
+    }
+
+    return NextResponse.json({
+      success: true,
+      property,
+      isOwner: session?.id === property.ownerId,
+      isSaved,
+      userSession: session // Include session info for client
+    });
 
   } catch (error) {
     console.error('Error fetching property:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch property' },
+      { 
+        success: false,
+        error: 'Failed to fetch property',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
       { status: 500 }
     );
   }
@@ -66,6 +95,14 @@ export async function PUT(request, { params }) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 403 }
+      );
+    }
+
+    // Validate required fields
+    if (!body.title || !body.location || !body.type) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
       );
     }
 
@@ -120,16 +157,31 @@ export async function PUT(request, { params }) {
       include: {
         images: true,
         address: true,
-        sharingOptions: true
+        sharingOptions: true,
+        owner: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true
+          }
+        }
       }
     });
 
-    return NextResponse.json(updatedProperty);
+    return NextResponse.json({
+      success: true,
+      property: updatedProperty
+    });
 
   } catch (error) {
     console.error('Error updating property:', error);
     return NextResponse.json(
-      { error: 'Failed to update property' },
+      { 
+        success: false,
+        error: 'Failed to update property',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
       { status: 500 }
     );
   }

@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 export async function getServerSession() {
   try {
     const cookieStore = cookies();
-    const sessionCookie = await cookieStore.get('session');
+    const sessionCookie = cookieStore.get('session');
 
     if (!sessionCookie?.value) {
       return null;
