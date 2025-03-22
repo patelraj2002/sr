@@ -1,13 +1,14 @@
 // src/app/api/users/[userId]/saved-properties/route.js
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/db';
-import { getServerSession } from '@/app/utils/auth';
+import { getServerSession } from '@/app/utils/serverAuth';
 
 export async function GET(request, { params }) {
   try {
+    const { userId } = params;
     const session = await getServerSession();
-    
-    if (!session || session.id !== params.userId) {
+
+    if (!session || session.id !== userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -16,12 +17,20 @@ export async function GET(request, { params }) {
 
     const savedProperties = await prisma.savedProperty.findMany({
       where: {
-        userId: params.userId
+        userId: userId
       },
       include: {
         property: {
           include: {
             images: true,
+            owner: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                phone: true
+              }
+            },
             sharingOptions: true
           }
         }
@@ -29,7 +38,8 @@ export async function GET(request, { params }) {
     });
 
     return NextResponse.json({
-      properties: savedProperties.map(sp => sp.property)
+      success: true,
+      savedProperties
     });
 
   } catch (error) {

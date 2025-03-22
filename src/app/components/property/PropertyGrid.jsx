@@ -9,7 +9,8 @@ import AuthModal from '@/app/components/common/AuthModal';
 export default function PropertyGrid({ 
   properties, 
   isAuthenticated = false,
-  userType = 'SEEKER',
+  userType = 'null',
+  isOwner = false,
   userId = null 
 }) {
   const router = useRouter();
@@ -37,9 +38,12 @@ export default function PropertyGrid({
         throw new Error(data.error || 'Failed to fetch saved properties');
       }
 
-      setSavedProperties(new Set(data.properties.map(p => p.id)));
+      // Update to use the correct data structure
+      const savedPropertyIds = data.savedProperties.map(sp => sp.propertyId);
+      setSavedProperties(new Set(savedPropertyIds));
     } catch (error) {
       console.error('Error fetching saved properties:', error);
+      setError('Failed to fetch saved properties');
     } finally {
       setLoading(false);
     }
@@ -72,15 +76,16 @@ export default function PropertyGrid({
       }
 
       // Update local state
-      const newSavedProperties = new Set(savedProperties);
-      if (isSaved) {
-        newSavedProperties.delete(propertyId);
-      } else {
-        newSavedProperties.add(propertyId);
-      }
-      setSavedProperties(newSavedProperties);
+      setSavedProperties(prev => {
+        const newSet = new Set(prev);
+        if (isSaved) {
+          newSet.delete(propertyId);
+        } else {
+          newSet.add(propertyId);
+        }
+        return newSet;
+      });
 
-      // Show success message
       setSuccess(isSaved ? 'Property removed from saved' : 'Property saved successfully');
       setTimeout(() => setSuccess(''), 3000);
 
@@ -209,6 +214,7 @@ export default function PropertyGrid({
               isSaved={savedProperties.has(property.id)}
               onInquiryClick={handleInquiryClick}
               onSaveClick={handleSaveProperty}
+              isOwner={isOwner}
             />
           </div>
         ))}

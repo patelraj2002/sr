@@ -1,12 +1,14 @@
+// src/app/components/common/header.jsx
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -17,23 +19,31 @@ export default function Header() {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    router.push('/auth/signin');
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/signout', { method: 'POST' });
+      localStorage.removeItem('user');
+      setUser(null);
+      router.push('/auth/signin');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const getDashboardLink = () => {
     if (!user) return '/auth/signin';
     return user.userType === 'OWNER' 
       ? `/dashboard/owner/${user.id}` 
-      : '/dashboard/seeker';
+      : `/dashboard/seeker/${user.id}`;
   };
+
+  const isPropertiesPage = pathname === '/properties';
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo - made more responsive */}
+          {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Image
               src="/images/logo.png"
@@ -52,12 +62,22 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
             {user ? (
               <>
-                <Link
-                  href={getDashboardLink()}
-                  className="text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  Dashboard
-                </Link>
+                {/* Show My Dashboard button only for seekers on properties page */}
+                {user.userType === 'SEEKER' && isPropertiesPage && (
+                  <Link
+                    href={getDashboardLink()}
+                    className="bg-primary-100 text-primary-600 px-4 py-2 rounded-md 
+                      hover:bg-primary-200 transition-colors flex items-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" 
+                      />
+                    </svg>
+                    My Dashboard
+                  </Link>
+                )}
+
                 {user.userType === 'OWNER' && (
                   <Link
                     href="/properties/new"
@@ -66,12 +86,19 @@ export default function Header() {
                     Add Property
                   </Link>
                 )}
+
                 <div className="flex items-center space-x-4">
                   <span className="text-gray-700">Welcome, {user.name}</span>
                   <button
                     onClick={handleLogout}
-                    className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition-colors"
+                    className="bg-primary-500 text-white px-4 py-2 rounded-md 
+                      hover:bg-primary-600 transition-colors flex items-center gap-2"
                   >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
+                      />
+                    </svg>
                     Sign Out
                   </button>
                 </div>
@@ -140,6 +167,20 @@ export default function Header() {
             <div className="flex flex-col space-y-2">
               {user ? (
                 <>
+                  {user.userType === 'SEEKER' && isPropertiesPage && (
+                    <Link
+                      href={getDashboardLink()}
+                      className="flex items-center gap-2 text-primary-600 px-4 py-3"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" 
+                        />
+                      </svg>
+                      My Dashboard
+                    </Link>
+                  )}
                   <Link
                     href={getDashboardLink()}
                     className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-3"

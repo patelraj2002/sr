@@ -1,7 +1,7 @@
 // src/app/dashboard/seeker/[id]/layout.jsx
 import { getServerSession } from '@/app/utils/auth';
 import { redirect } from 'next/navigation';
-import SeekerNavigation from '../SeekerNavigation';
+import SeekerNavigation from '@/app/components/dashboard/seeker/SeekerNavigation';
 
 export default async function SeekerDashboardLayout({ children, params: { id } }) {
   const session = await getServerSession();
@@ -15,7 +15,7 @@ export default async function SeekerDashboardLayout({ children, params: { id } }
       <SeekerNavigation userId={id} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
-      </main>
+      </main>1
     </div>
   );
 }
