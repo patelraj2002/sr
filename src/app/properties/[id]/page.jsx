@@ -350,6 +350,54 @@ export default function PropertyPage({ params }) {
                   </div>
                 </div>
               )}
+              
+              {/* Address Details Section */}
+{property.address && (
+  <div className="mt-6 sm:mt-8">
+    <h3 className="text-lg sm:text-xl font-semibold mb-4">Address Details</h3>
+    <div className="bg-gray-50 rounded-lg p-4 sm:p-6 space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Street Address */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-500">Street Address</label>
+          <p className="text-gray-900">{property.address.street}</p>
+        </div>
+
+        {/* Landmark */}
+        {property.address.landmark && (
+          <div className="space-y-1">
+            <label className="text-sm text-gray-500">Landmark</label>
+            <p className="text-gray-900">{property.address.landmark}</p>
+          </div>
+        )}
+
+        {/* Area */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-500">Area</label>
+          <p className="text-gray-900">{property.address.area}</p>
+        </div>
+
+        {/* City */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-500">City</label>
+          <p className="text-gray-900">{property.address.city}</p>
+        </div>
+
+        {/* State */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-500">State</label>
+          <p className="text-gray-900">{property.address.state}</p>
+        </div>
+
+        {/* Pincode */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-500">Pincode</label>
+          <p className="text-gray-900">{property.address.pincode}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
               {/* Location Map Section */}
               {property.latitude && property.longitude && (

@@ -52,6 +52,16 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+    // Validate address fields
+    if (!address || !address.street || !address.city || !address.state || !address.pincode) {
+      return NextResponse.json(
+        { error: 'Complete address details are required' },
+        { status: 400 }
+      );
+    }
+
+    // Set area to street if not provided
+    const addressArea = address.area || address.street;
 
     // Validate property type specific fields
     if (type === 'FLAT' && (!price || price <= 0)) {
@@ -132,14 +142,16 @@ export async function POST(request) {
         ownerId,
 
         // Create address
-        address: address ? {
+        address: {
           create: {
             street: address.street.trim(),
+            area: addressArea.trim(),
+            landmark: address.landmark?.trim() || null,
             city: address.city.trim(),
             state: address.state.trim(),
             pincode: address.pincode.trim()
           }
-        } : undefined,
+        },
 
         // Create sharing options for PG
         sharingOptions: type === 'PG' ? {

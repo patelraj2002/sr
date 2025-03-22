@@ -191,6 +191,10 @@ export default function PropertyForm({ ownerId, initialData = null }) {
         ...formData,
         ownerId,
         price: formData.type === 'FLAT' ? parseFloat(formData.price) : null,
+        address: {
+          ...formData.address,
+          area: formData.address.area || formData.address.street, // Fallback to street if area not provided
+        },
         rooms: parseInt(formData.rooms),
         bathrooms: parseInt(formData.bathrooms),
         sharingOptions: formData.type === 'PG' 
@@ -383,21 +387,21 @@ export default function PropertyForm({ ownerId, initialData = null }) {
     </div>
 
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        Area*
-      </label>
-      <input
-        type="text"
-        name="area"
-        value={formData.address.area}
-        onChange={handleAddressChange}
-        className="block w-full rounded-md border-gray-300 shadow-sm 
-          focus:border-primary-500 focus:ring-primary-500
-          text-sm sm:text-base py-2 px-3"
-        placeholder="Enter area name"
-        required
-      />
-    </div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Area*
+  </label>
+  <input
+    type="text"
+    name="area"
+    value={formData.address.area}
+    onChange={handleAddressChange}
+    className="block w-full rounded-md border-gray-300 shadow-sm 
+      focus:border-primary-500 focus:ring-primary-500
+      text-sm sm:text-base py-2 px-3"
+    placeholder="Enter area name"
+    required
+  />
+</div>
 
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">

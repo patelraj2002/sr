@@ -83,15 +83,19 @@ enum PropertyStatus {
 model Address {
   id          String    @id @default(cuid())
   street      String
+  landmark    String?   // Added landmark field
+  area        String    // Added area field
   city        String
   state       String
   pincode     String
-  propertyId  String    @unique // One-to-one relation with property
+  propertyId  String    @unique 
   property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([city])
+  @@index([area])      // Added index for area searches
+  @@index([state])     // Added index for state searches
   @@index([propertyId])
 }
 

@@ -20,12 +20,12 @@ export async function GET(request, { params }) {
             phone: true
           }
         },
+        address: true,
         sharingOptions: {
           orderBy: {
             persons: 'asc'
           }
         },
-        address: true,
         inquiries: true
       }
     });
