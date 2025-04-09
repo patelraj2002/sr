@@ -1,4 +1,3 @@
-// src/app/admin/users/page.jsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -39,41 +38,47 @@ export default function UserManagement() {
     }
   };
 
-  const handleStatusChange = async (userId, newStatus) => {
+  const handleDeleteUser = async (userId) => {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+      return;
+    }
+
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
-        method: 'PATCH',
+        method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: newStatus }),
+          'Content-Type': 'application/json'
+        }
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update user status');
+        const errorData = await response.json().catch(() => ({
+          error: 'Failed to delete user'
+        }));
+        throw new Error(errorData.error || 'Failed to delete user');
       }
 
-      // Update local state
-      setUsers(prev =>
-        prev.map(user =>
-          user.id === userId
-            ? { ...user, status: newStatus }
-            : user
-        )
-      );
+      const data = await response.json();
+      
+      if (data.success) {
+        // Remove user from local state
+        setUsers(prev => prev.filter(user => user.id !== userId));
+      } else {
+        throw new Error(data.error || 'Failed to delete user');
+      }
     } catch (error) {
-      setError(error.message);
+      console.error('Error deleting user:', error);
+      setError(error.message || 'Failed to delete user');
     }
   };
 
   const filteredUsers = users.filter(user => {
     if (filter.type !== 'ALL' && user.userType !== filter.type) return false;
-    if (filter.status !== 'ALL' && user.status !== filter.status) return false;
     if (filter.search) {
       const searchTerm = filter.search.toLowerCase();
       return (
-        user.name.toLowerCase().includes(searchTerm) ||
-        user.email.toLowerCase().includes(searchTerm)
+        user.name?.toLowerCase().includes(searchTerm) ||
+        user.email?.toLowerCase().includes(searchTerm)
       );
     }
     return true;
@@ -102,16 +107,6 @@ export default function UserManagement() {
             <option value="OWNER">Owners</option>
             <option value="SEEKER">Seekers</option>
           </select>
-
-          <select
-            value={filter.status}
-            onChange={(e) => setFilter(prev => ({ ...prev, status: e.target.value }))}
-            className="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-          >
-            <option value="ALL">All Status</option>
-            <option value="ACTIVE">Active</option>
-            <option value="BLOCKED">Blocked</option>
-          </select>
         </div>
       </div>
 
@@ -132,7 +127,7 @@ export default function UserManagement() {
                 Type
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
+                Properties
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Joined
@@ -167,6 +162,11 @@ export default function UserManagement() {
                         <div className="text-sm text-gray-500">
                           {user.email}
                         </div>
+                        {user.phone && (
+                          <div className="text-sm text-gray-500">
+                            {user.phone}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </td>
@@ -179,35 +179,22 @@ export default function UserManagement() {
                       {user.userType}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.status === 'ACTIVE'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {user.status}
-                    </span>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {user._count?.properties || 0} properties
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
-                      onClick={() => handleStatusChange(
-                        user.id,
-                        user.status === 'ACTIVE' ? 'BLOCKED' : 'ACTIVE'
-                      )}
-                      className={`text-sm font-medium ${
-                        user.status === 'ACTIVE'
-                          ? 'text-red-600 hover:text-red-900'
-                          : 'text-green-600 hover:text-green-900'
-                      }`}
+                      onClick={() => handleDeleteUser(user.id)}
+                      className="text-red-600 hover:text-red-900 font-medium mr-4"
                     >
-                      {user.status === 'ACTIVE' ? 'Block' : 'Unblock'}
+                      Delete
                     </button>
                     <button
                       onClick={() => router.push(`/admin/users/${user.id}`)}
-                      className="ml-4 text-primary-600 hover:text-primary-900"
+                      className="text-primary-600 hover:text-primary-900"
                     >
                       View Details
                     </button>

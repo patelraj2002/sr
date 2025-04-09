@@ -1,4 +1,3 @@
-// src/app/components/common/ImageUpload.jsx
 'use client';
 
 import { useState } from 'react';
@@ -44,7 +43,8 @@ export default function ImageUpload({ images = [], onChange, maxImages = 5 }) {
         });
 
         if (!res.ok) {
-          throw new Error('Upload failed');
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Upload failed');
         }
 
         return await res.json();
@@ -54,7 +54,7 @@ export default function ImageUpload({ images = [], onChange, maxImages = 5 }) {
       onChange([...images, ...uploadedImages]);
     } catch (err) {
       console.error('Upload error:', err);
-      setError('Failed to upload images');
+      setError(err.message || 'Failed to upload images');
     } finally {
       setUploading(false);
     }
@@ -142,6 +142,7 @@ export default function ImageUpload({ images = [], onChange, maxImages = 5 }) {
                   alt={`Property image ${index + 1}`}
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 50vw, 25vw"
                 />
               </div>
               
