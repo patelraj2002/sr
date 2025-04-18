@@ -1,6 +1,7 @@
 // src/app/layout.js
 import './globals.css';
 import Script from 'next/script';
+import Footer from './components/common/Footer';
 
 export const metadata = {
   title: 'SR Homes',
@@ -22,7 +23,10 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body suppressHydrationWarning={true} className="min-h-screen flex flex-col">
-        {children}
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );
