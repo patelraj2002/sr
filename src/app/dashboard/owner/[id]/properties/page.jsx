@@ -7,14 +7,15 @@ import Link from 'next/link';
 
 export default async function OwnerProperties({ params }) {
   const session = await getServerSession();
+  const id = await params.id;
   
-  if (!session || session.id !== params.id) {
+  if (!session || session.id !== id) {
     redirect('/auth/signin');
   }
 
   const properties = await prisma.property.findMany({
     where: {
-      ownerId: params.id
+      ownerId: id
     },
     include: {
       images: true,
@@ -31,7 +32,7 @@ export default async function OwnerProperties({ params }) {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">My Properties</h1>
         <Link
-          href={`/dashboard/owner/${params.id}/properties/new`}
+          href={`/dashboard/owner/${id}/properties/new`}
           className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
         >
           Add New Property

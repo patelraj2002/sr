@@ -17,13 +17,19 @@ export default function AccountSettings({ userId }) {
     e.preventDefault();
     setLoading(true);
     setError('');
-
+  
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setError('New passwords do not match');
       setLoading(false);
       return;
     }
-
+  
+    if (passwordData.newPassword.length < 6) {
+      setError('New password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+  
     try {
       const res = await fetch(`/api/users/${userId}/password`, {
         method: 'PUT',
@@ -35,17 +41,23 @@ export default function AccountSettings({ userId }) {
           newPassword: passwordData.newPassword
         }),
       });
-
+  
+      const data = await res.json();
+  
       if (!res.ok) {
-        throw new Error('Failed to update password');
+        throw new Error(data.error || 'Failed to update password');
       }
-
+  
       setShowPasswordForm(false);
       setPasswordData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       });
+  
+      // Show success message (you might want to add a success state)
+      alert('Password updated successfully');
+  
     } catch (err) {
       setError(err.message);
     } finally {
