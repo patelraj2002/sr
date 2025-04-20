@@ -74,6 +74,12 @@ enum PropertyType {
   FLAT
 }
 
+enum Gender {
+  BOYS
+  GIRLS
+  ANY
+}
+
 enum PropertyStatus {
   ACTIVE
   INACTIVE

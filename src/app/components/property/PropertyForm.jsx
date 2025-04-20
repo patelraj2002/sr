@@ -21,6 +21,7 @@ export default function PropertyForm({ ownerId, initialData = null }) {
     title: initialData?.title || '',
     description: initialData?.description || '',
     type: initialData?.type || 'PG',
+    gender: initialData?.gender || 'ANY', // Added gender field
     location: initialData?.location || '',
     googleAddress: initialData?.googleAddress || '',
     latitude: initialData?.latitude || null,
@@ -32,7 +33,7 @@ export default function PropertyForm({ ownerId, initialData = null }) {
     rules: initialData?.rules || [],
     available: initialData?.available || new Date().toISOString().split('T')[0],
     images: initialData?.images || [],
-    price: initialData?.price || '', // For FLAT type
+    price: initialData?.price || '',
     sharingOptions: initialData?.sharingOptions || [
       { persons: 2, price: '', available: 0, total: 0 },
       { persons: 3, price: '', available: 0, total: 0 }
@@ -46,7 +47,6 @@ export default function PropertyForm({ ownerId, initialData = null }) {
       pincode: ''
     }
   });
-
   useEffect(() => {
     if (formData.address.state) {
       setAvailableCities(CITIES_BY_STATE[formData.address.state] || []);
@@ -59,7 +59,6 @@ export default function PropertyForm({ ownerId, initialData = null }) {
     }
   }, [formData.address.city]);
 
-  // Add this handleChange function
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -193,7 +192,7 @@ export default function PropertyForm({ ownerId, initialData = null }) {
         price: formData.type === 'FLAT' ? parseFloat(formData.price) : null,
         address: {
           ...formData.address,
-          area: formData.address.area || formData.address.street, // Fallback to street if area not provided
+          area: formData.address.area || formData.address.street,
         },
         rooms: parseInt(formData.rooms),
         bathrooms: parseInt(formData.bathrooms),
@@ -234,7 +233,6 @@ export default function PropertyForm({ ownerId, initialData = null }) {
       setLoading(false);
     }
   };
-
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-6 sm:space-y-8 p-4 sm:p-6 lg:p-8">
       {error && (
@@ -279,6 +277,28 @@ export default function PropertyForm({ ownerId, initialData = null }) {
               <option value="FLAT">Flat</option>
             </select>
           </div>
+
+          {/* Gender Selection for PG */}
+          {formData.type === 'PG' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Gender Preference*
+              </label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="block w-full rounded-md border-gray-300 shadow-sm 
+                  focus:border-primary-500 focus:ring-primary-500
+                  text-sm sm:text-base py-2 px-3"
+                required
+              >
+                <option value="ANY">Any</option>
+                <option value="BOYS">Boys Only</option>
+                <option value="GIRLS">Girls Only</option>
+              </select>
+            </div>
+          )}
         </div>
 
         <div className="mt-4">
@@ -298,131 +318,130 @@ export default function PropertyForm({ ownerId, initialData = null }) {
         </div>
       </div>
 
-            {/* Detailed Address */}
-            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-  <h2 className="text-lg sm:text-xl font-medium mb-4">Detailed Address</h2>
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        Street Address*
-      </label>
-      <input
-        type="text"
-        name="street"
-        value={formData.address.street}
-        onChange={handleAddressChange}
-        className="block w-full rounded-md border-gray-300 shadow-sm 
-          focus:border-primary-500 focus:ring-primary-500
-          text-sm sm:text-base py-2 px-3"
-        placeholder="Enter street address"
-        required
-      />
-    </div>
+      {/* Detailed Address */}
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-medium mb-4">Detailed Address</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Street Address*
+            </label>
+            <input
+              type="text"
+              name="street"
+              value={formData.address.street}
+              onChange={handleAddressChange}
+              className="block w-full rounded-md border-gray-300 shadow-sm 
+                focus:border-primary-500 focus:ring-primary-500
+                text-sm sm:text-base py-2 px-3"
+              placeholder="Enter street address"
+              required
+            />
+          </div>
 
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        Landmark
-      </label>
-      <input
-        type="text"
-        name="landmark"
-        value={formData.address.landmark}
-        onChange={handleAddressChange}
-        className="block w-full rounded-md border-gray-300 shadow-sm 
-          focus:border-primary-500 focus:ring-primary-500
-          text-sm sm:text-base py-2 px-3"
-        placeholder="Near landmark"
-      />
-    </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Landmark
+            </label>
+            <input
+              type="text"
+              name="landmark"
+              value={formData.address.landmark}
+              onChange={handleAddressChange}
+              className="block w-full rounded-md border-gray-300 shadow-sm 
+                focus:border-primary-500 focus:ring-primary-500
+                text-sm sm:text-base py-2 px-3"
+              placeholder="Near landmark"
+            />
+          </div>
 
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        State*
-      </label>
-      <select
-        name="state"
-        value={formData.address.state}
-        onChange={(e) => {
-          const selectedState = e.target.value;
-          setFormData(prev => ({
-            ...prev,
-            address: {
-              ...prev.address,
-              state: selectedState,
-              city: ''
-            }
-          }));
-          setAvailableCities(CITIES_BY_STATE[selectedState] || []);
-        }}
-        className="block w-full rounded-md border-gray-300 shadow-sm 
-          focus:border-primary-500 focus:ring-primary-500
-          text-sm sm:text-base py-2 px-3"
-        required
-      >
-        <option value="">Select State</option>
-        {availableStates.map(state => (
-          <option key={state} value={state}>{state}</option>
-        ))}
-      </select>
-    </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              State*
+            </label>
+            <select
+              name="state"
+              value={formData.address.state}
+              onChange={(e) => {
+                const selectedState = e.target.value;
+                setFormData(prev => ({
+                  ...prev,
+                  address: {
+                    ...prev.address,
+                    state: selectedState,
+                    city: ''
+                  }
+                }));
+                setAvailableCities(CITIES_BY_STATE[selectedState] || []);
+              }}
+              className="block w-full rounded-md border-gray-300 shadow-sm 
+                focus:border-primary-500 focus:ring-primary-500
+                text-sm sm:text-base py-2 px-3"
+              required
+            >
+              <option value="">Select State</option>
+              {availableStates.map(state => (
+                <option key={state} value={state}>{state}</option>
+              ))}
+            </select>
+          </div>
 
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        City*
-      </label>
-      <select
-        name="city"
-        value={formData.address.city}
-        onChange={handleAddressChange}
-        className="block w-full rounded-md border-gray-300 shadow-sm 
-          focus:border-primary-500 focus:ring-primary-500
-          text-sm sm:text-base py-2 px-3"
-        required
-      >
-        <option value="">Select City</option>
-        {availableCities.map(city => (
-          <option key={city} value={city}>{city}</option>
-        ))}
-      </select>
-    </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              City*
+            </label>
+            <select
+              name="city"
+              value={formData.address.city}
+              onChange={handleAddressChange}
+              className="block w-full rounded-md border-gray-300 shadow-sm 
+                focus:border-primary-500 focus:ring-primary-500
+                text-sm sm:text-base py-2 px-3"
+              required
+            >
+              <option value="">Select City</option>
+              {availableCities.map(city => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+          </div>
 
-    <div>
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-    Area*
-  </label>
-  <input
-    type="text"
-    name="area"
-    value={formData.address.area}
-    onChange={handleAddressChange}
-    className="block w-full rounded-md border-gray-300 shadow-sm 
-      focus:border-primary-500 focus:ring-primary-500
-      text-sm sm:text-base py-2 px-3"
-    placeholder="Enter area name"
-    required
-  />
-</div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Area*
+            </label>
+            <input
+              type="text"
+              name="area"
+              value={formData.address.area}
+              onChange={handleAddressChange}
+              className="block w-full rounded-md border-gray-300 shadow-sm 
+                focus:border-primary-500 focus:ring-primary-500
+                text-sm sm:text-base py-2 px-3"
+              placeholder="Enter area name"
+              required
+            />
+          </div>
 
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        Pincode*
-      </label>
-      <input
-        type="text"
-        name="pincode"
-        value={formData.address.pincode}
-        onChange={handleAddressChange}
-        className="block w-full rounded-md border-gray-300 shadow-sm 
-          focus:border-primary-500 focus:ring-primary-500
-          text-sm sm:text-base py-2 px-3"
-        placeholder="Enter pincode"
-        pattern="[0-9]{6}"
-        required
-      />
-    </div>
-  </div>
-</div>
-
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Pincode*
+            </label>
+            <input
+              type="text"
+              name="pincode"
+              value={formData.address.pincode}
+              onChange={handleAddressChange}
+              className="block w-full rounded-md border-gray-300 shadow-sm 
+                focus:border-primary-500 focus:ring-primary-500
+                text-sm sm:text-base py-2 px-3"
+              placeholder="Enter pincode"
+              pattern="[0-9]{6}"
+              required
+            />
+          </div>
+        </div>
+      </div>
       {/* Location */}
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-medium mb-4">Location*</h2>
@@ -507,8 +526,9 @@ export default function PropertyForm({ ownerId, initialData = null }) {
           </label>
         </div>
       </div>
-            {/* PG Sharing Options */}
-            {formData.type === 'PG' && (
+
+      {/* PG Sharing Options */}
+      {formData.type === 'PG' && (
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
             <h2 className="text-lg sm:text-xl font-medium">Sharing Options*</h2>
@@ -625,7 +645,6 @@ export default function PropertyForm({ ownerId, initialData = null }) {
           </div>
         </div>
       )}
-
       {/* Amenities */}
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-medium mb-4">Amenities</h2>
