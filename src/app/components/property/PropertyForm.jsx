@@ -640,25 +640,65 @@ export default function PropertyForm({ ownerId, initialData = null }) {
   </div>
 )}
 
-      {/* Flat Price */}
-      {formData.type === 'FLAT' && (
+      {/* Rent Details */}
+      {(formData.type === 'FLAT' || formData.type === 'PG') && (
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <h2 className="text-lg sm:text-xl font-medium mb-4">Rent Details</h2>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Monthly Rent*
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span className="text-gray-500">₹</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            {formData.type === 'FLAT' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Monthly Rent*
+                </label>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500">₹</span>
+                  </div>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    min="0"
+                    className="block w-full pl-7 rounded-md border-gray-300 shadow-sm 
+                      focus:border-primary-500 focus:ring-primary-500
+                      text-sm sm:text-base py-2 px-3"
+                    required
+                  />
+                </div>
               </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Rent Payment Date*
+              </label>
               <input
                 type="number"
-                name="price"
-                value={formData.price}
+                name="rentPaymentDate"
+                value={formData.rentPaymentDate}
                 onChange={handleChange}
-                min="0"
-                className="block w-full pl-7 rounded-md border-gray-300 shadow-sm 
+                min="1"
+                max="31"
+                className="block w-full rounded-md border-gray-300 shadow-sm 
+                  focus:border-primary-500 focus:ring-primary-500
+                  text-sm sm:text-base py-2 px-3"
+                placeholder="Enter day of month (1-31)"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Advance Deposit (in months)*
+              </label>
+              <input
+                type="number"
+                name="advanceDeposit"
+                value={formData.advanceDeposit}
+                onChange={handleChange}
+                min="1"
+                className="block w-full rounded-md border-gray-300 shadow-sm 
                   focus:border-primary-500 focus:ring-primary-500
                   text-sm sm:text-base py-2 px-3"
                 required
