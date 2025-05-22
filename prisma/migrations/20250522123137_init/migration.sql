@@ -5,6 +5,9 @@ CREATE TYPE "UserType" AS ENUM ('SEEKER', 'OWNER');
 CREATE TYPE "PropertyType" AS ENUM ('PG', 'FLAT');
 
 -- CreateEnum
+CREATE TYPE "Gender" AS ENUM ('BOYS', 'GIRLS', 'ANY');
+
+-- CreateEnum
 CREATE TYPE "PropertyStatus" AS ENUM ('ACTIVE', 'INACTIVE', 'RENTED');
 
 -- CreateEnum
@@ -54,6 +57,8 @@ CREATE TABLE "Property" (
 CREATE TABLE "Address" (
     "id" TEXT NOT NULL,
     "street" TEXT NOT NULL,
+    "landmark" TEXT,
+    "area" TEXT NOT NULL,
     "city" TEXT NOT NULL,
     "state" TEXT NOT NULL,
     "pincode" TEXT NOT NULL,
@@ -144,6 +149,12 @@ CREATE UNIQUE INDEX "Address_propertyId_key" ON "Address"("propertyId");
 
 -- CreateIndex
 CREATE INDEX "Address_city_idx" ON "Address"("city");
+
+-- CreateIndex
+CREATE INDEX "Address_area_idx" ON "Address"("area");
+
+-- CreateIndex
+CREATE INDEX "Address_state_idx" ON "Address"("state");
 
 -- CreateIndex
 CREATE INDEX "Address_propertyId_idx" ON "Address"("propertyId");

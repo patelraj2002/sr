@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import DeleteAccount from '@/app/components/dashboard/DeleteAccount';
 
 export default function SeekerProfile() {
   const router = useRouter();
@@ -156,12 +157,19 @@ export default function SeekerProfile() {
 
       <div className="mt-8 pt-6 border-t border-gray-200">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Account Settings</h3>
-        <button
-          onClick={() => router.push('/api/auth/signout')}
-          className="text-red-600 hover:text-red-700"
-        >
-          Sign Out
-        </button>
+        <div className="space-y-4">
+          <button
+            onClick={() => router.push('/api/auth/signout')}
+            className="text-red-600 hover:text-red-700"
+          >
+            Sign Out
+          </button>
+
+          {/* Delete Account Section */}
+          <div className="pt-4 border-t border-gray-200">
+            {user && <DeleteAccount userId={user.id} />}
+          </div>
+        </div>
       </div>
     </div>
   );

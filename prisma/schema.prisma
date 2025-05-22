@@ -48,6 +48,8 @@ model Property {
   available      DateTime        @default(now())
   amenities      String[]        // Array of amenities
   rules          String[]        // Array of rules
+  rentPaymentDate Int            @default(1)  // Day of month when rent is due (1-31)
+  advanceDeposit Int            @default(1)  // Number of months for advance deposit
 
   // Owner relation - crucial for authorization
   ownerId        String

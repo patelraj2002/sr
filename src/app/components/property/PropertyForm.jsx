@@ -1,4 +1,3 @@
-// src/app/components/property/PropertyForm.jsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -21,7 +20,7 @@ export default function PropertyForm({ ownerId, initialData = null }) {
     title: initialData?.title || '',
     description: initialData?.description || '',
     type: initialData?.type || 'PG',
-    gender: initialData?.gender || 'ANY', // Added gender field
+    gender: initialData?.gender || 'ANY',
     location: initialData?.location || '',
     googleAddress: initialData?.googleAddress || '',
     latitude: initialData?.latitude || null,
@@ -35,6 +34,7 @@ export default function PropertyForm({ ownerId, initialData = null }) {
     images: initialData?.images || [],
     price: initialData?.price || '',
     sharingOptions: initialData?.sharingOptions || [
+      { persons: 1, price: '', available: 0, total: 0 },
       { persons: 2, price: '', available: 0, total: 0 },
       { persons: 3, price: '', available: 0, total: 0 }
     ],
@@ -47,6 +47,7 @@ export default function PropertyForm({ ownerId, initialData = null }) {
       pincode: ''
     }
   });
+
   useEffect(() => {
     if (formData.address.state) {
       setAvailableCities(CITIES_BY_STATE[formData.address.state] || []);
@@ -105,13 +106,14 @@ export default function PropertyForm({ ownerId, initialData = null }) {
   };
 
   const addSharingOption = () => {
-    if (formData.sharingOptions.length < 4) {
+    if (formData.sharingOptions.length < 6) {
+      const nextPersons = formData.sharingOptions.length + 1;
       setFormData(prev => ({
         ...prev,
         sharingOptions: [
           ...prev.sharingOptions,
           { 
-            persons: prev.sharingOptions.length + 2,
+            persons: nextPersons,
             price: '',
             available: 0,
             total: 0
@@ -122,11 +124,12 @@ export default function PropertyForm({ ownerId, initialData = null }) {
   };
 
   const removeSharingOption = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      sharingOptions: prev.sharingOptions.filter((_, i) => i !== index)
-    }));
-  };
+  setFormData(prev => ({
+    ...prev,
+    sharingOptions: prev.sharingOptions.filter((_, i) => i !== index)
+  }));
+};
+
 
   const handleImageChange = (images) => {
     setFormData(prev => ({ ...prev, images }));
@@ -185,6 +188,15 @@ export default function PropertyForm({ ownerId, initialData = null }) {
         }
       }
 
+      // Validate rent payment date and deposit
+      if (!formData.rentPaymentDate || formData.rentPaymentDate < 1 || formData.rentPaymentDate > 31) {
+        throw new Error('Please enter a valid rent payment date (1-31)');
+      }
+
+      if (!formData.advanceDeposit || formData.advanceDeposit < 1) {
+        throw new Error('Please enter a valid number of months for advance deposit');
+      }
+
       // Prepare data for API
       const propertyData = {
         ...formData,
@@ -196,6 +208,8 @@ export default function PropertyForm({ ownerId, initialData = null }) {
         },
         rooms: parseInt(formData.rooms),
         bathrooms: parseInt(formData.bathrooms),
+        rentPaymentDate: parseInt(formData.rentPaymentDate),
+        advanceDeposit: parseInt(formData.advanceDeposit),
         sharingOptions: formData.type === 'PG' 
           ? formData.sharingOptions.map(opt => ({
               persons: parseInt(opt.persons),
@@ -233,6 +247,7 @@ export default function PropertyForm({ ownerId, initialData = null }) {
       setLoading(false);
     }
   };
+
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-6 sm:space-y-8 p-4 sm:p-6 lg:p-8">
       {error && (
@@ -442,6 +457,7 @@ export default function PropertyForm({ ownerId, initialData = null }) {
           </div>
         </div>
       </div>
+
       {/* Location */}
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-medium mb-4">Location*</h2>
@@ -528,95 +544,101 @@ export default function PropertyForm({ ownerId, initialData = null }) {
       </div>
 
       {/* PG Sharing Options */}
-      {formData.type === 'PG' && (
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
-            <h2 className="text-lg sm:text-xl font-medium">Sharing Options*</h2>
+      {/* PG Sharing Options */}
+{formData.type === 'PG' && (
+  <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+      <h2 className="text-lg sm:text-xl font-medium">Sharing Options*</h2>
+      {formData.sharingOptions.length < 6 && (
+        <button
+          type="button"
+          onClick={addSharingOption}
+          className="text-primary-600 hover:text-primary-700
+            text-sm sm:text-base py-1 px-2 rounded transition-colors"
+        >
+          + Add Sharing Option
+        </button>
+      )}
+    </div>
+
+    <div className="space-y-4">
+      {formData.sharingOptions.map((option, index) => (
+        <div key={index} className="bg-gray-50 p-4 rounded-lg">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
+            <h4 className="font-medium text-sm sm:text-base">
+              {option.persons}-Sharing Option
+            </h4>
             <button
               type="button"
-              onClick={addSharingOption}
-              disabled={formData.sharingOptions.length >= 4}
-              className="text-primary-600 hover:text-primary-700 disabled:opacity-50
-                text-sm sm:text-base py-1 px-2 rounded transition-colors"
+              onClick={() => removeSharingOption(index)}
+              className="text-red-600 hover:text-red-700 text-sm sm:text-base
+                py-1 px-2 rounded transition-colors"
             >
-              + Add Sharing Option
+              Remove
             </button>
           </div>
 
-          <div className="space-y-4">
-            {formData.sharingOptions.map((option, index) => (
-              <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
-                  <h4 className="font-medium text-sm sm:text-base">
-                    {option.persons}-Sharing Option
-                  </h4>
-                  {index > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeSharingOption(index)}
-                      className="text-red-600 hover:text-red-700 text-sm sm:text-base
-                        py-1 px-2 rounded transition-colors"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Price per Person*
+              </label>
+              <input
+                type="number"
+                value={option.price}
+                onChange={(e) => handleSharingOptionChange(index, 'price', e.target.value)}
+                min="0"
+                className="block w-full rounded-md border-gray-300 shadow-sm 
+                  focus:border-primary-500 focus:ring-primary-500
+                  text-sm sm:text-base py-2 px-3"
+                required
+              />
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Price per Person*
-                    </label>
-                    <input
-                      type="number"
-                      value={option.price}
-                      onChange={(e) => handleSharingOptionChange(index, 'price', e.target.value)}
-                      min="0"
-                      className="block w-full rounded-md border-gray-300 shadow-sm 
-                        focus:border-primary-500 focus:ring-primary-500
-                        text-sm sm:text-base py-2 px-3"
-                      required
-                    />
-                  </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Available Beds*
+              </label>
+              <input
+                type="number"
+                value={option.available}
+                onChange={(e) => handleSharingOptionChange(index, 'available', e.target.value)}
+                min="0"
+                max={option.total}
+                className="block w-full rounded-md border-gray-300 shadow-sm 
+                  focus:border-primary-500 focus:ring-primary-500
+                  text-sm sm:text-base py-2 px-3"
+                required
+              />
+            </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Available Beds*
-                    </label>
-                    <input
-                      type="number"
-                      value={option.available}
-                      onChange={(e) => handleSharingOptionChange(index, 'available', e.target.value)}
-                      min="0"
-                      max={option.total}
-                      className="block w-full rounded-md border-gray-300 shadow-sm 
-                        focus:border-primary-500 focus:ring-primary-500
-                        text-sm sm:text-base py-2 px-3"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Total Beds*
-                    </label>
-                    <input
-                      type="number"
-                      value={option.total}
-                      onChange={(e) => handleSharingOptionChange(index, 'total', e.target.value)}
-                      min="1"
-                      className="block w-full rounded-md border-gray-300 shadow-sm 
-                        focus:border-primary-500 focus:ring-primary-500
-                        text-sm sm:text-base py-2 px-3"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Total Beds*
+              </label>
+              <input
+                type="number"
+                value={option.total}
+                onChange={(e) => handleSharingOptionChange(index, 'total', e.target.value)}
+                min="1"
+                className="block w-full rounded-md border-gray-300 shadow-sm 
+                  focus:border-primary-500 focus:ring-primary-500
+                  text-sm sm:text-base py-2 px-3"
+                required
+              />
+            </div>
           </div>
         </div>
-      )}
+      ))}
+    </div>
+
+    {formData.sharingOptions.length === 0 && (
+      <div className="mt-4 text-yellow-700 bg-yellow-50 p-4 rounded-lg">
+        Please add at least one sharing option.
+      </div>
+    )}
+  </div>
+)}
 
       {/* Flat Price */}
       {formData.type === 'FLAT' && (
@@ -645,6 +667,7 @@ export default function PropertyForm({ ownerId, initialData = null }) {
           </div>
         </div>
       )}
+
       {/* Amenities */}
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-medium mb-4">Amenities</h2>

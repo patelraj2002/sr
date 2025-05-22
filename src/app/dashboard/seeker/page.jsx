@@ -16,11 +16,20 @@ export default function SeekerPage() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Get user from localStorage
+    // Check authentication and load data
     const userString = localStorage.getItem('user');
-    if (userString) {
-      setUser(JSON.parse(userString));
+    if (!userString) {
+      router.push('/auth/signin');
+      return;
     }
+
+    const userData = JSON.parse(userString);
+    if (userData.userType !== 'SEEKER') {
+      router.push('/unauthorized');
+      return;
+    }
+
+    setUser(userData);
 
     // Fetch properties
     async function loadData() {
@@ -36,7 +45,7 @@ export default function SeekerPage() {
     }
 
     loadData();
-  }, []);
+  }, [router]);
 
   const handleFilterChange = (filters) => {
     if (!filters) {

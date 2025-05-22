@@ -1,239 +1,205 @@
-// src/app/components/common/header.jsx
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/hooks/useAuth';
 
 export default function Header() {
+  const { session, signOut } = useAuth();
   const router = useRouter();
-  const pathname = usePathname();
-  const [user, setUser] = useState(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/signout', { method: 'POST' });
-      localStorage.removeItem('user');
-      setUser(null);
+  const handleAddProperty = () => {
+    if (!session) {
       router.push('/auth/signin');
-    } catch (error) {
-      console.error('Logout error:', error);
+      return;
+    }
+
+    if (session.userType === 'OWNER') {
+      router.push(`/dashboard/owner/${session.id}/properties/new`);
+    } else {
+      alert('Only property owners can add properties');
     }
   };
 
-  const getDashboardLink = () => {
-    if (!user) return '/auth/signin';
-    return user.userType === 'OWNER' 
-      ? `/dashboard/owner/${user.id}` 
-      : `/dashboard/seeker/${user.id}`;
-  };
+  const handleSavedProperties = () => {
+    if (!session) {
+      router.push('/auth/signin');
+      return;
+    }
 
-  const isPropertiesPage = pathname === '/properties';
+    if (session.userType === 'SEEKER') {
+      router.push(`/dashboard/seeker/${session.id}/saved`);
+    }
+  };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <Image
-              src="/images/logo.png"
-              alt="SR Homes"
-              width={40}
-              height={40}
-              className="w-8 h-8 sm:w-10 sm:h-10"
-            />
-            <span className="text-xl sm:text-2xl font-bold">
-              <span className="text-primary-500">SR</span>
-              <span className="text-secondary-500">Homes</span>
-            </span>
-          </Link>
+    <header className="bg-white shadow">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          {/* Logo and Primary Navigation */}
+          <div className="flex">
+            <Link href="/" className="flex-shrink-0 flex items-center">
+              <span className="text-xl font-bold text-primary-600">SR Homes</span>
+            </Link>
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <Link
+                href="/"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-primary-600"
+              >
+                Home
+              </Link>
+              <Link
+                href="/properties/flats"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-primary-600"
+              >
+                Flats
+              </Link>
+              <Link
+                href="/properties/pg"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-primary-600"
+              >
+                Paying Guest
+              </Link>
+              <Link
+                href="/about"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-primary-600"
+              >
+                About Us
+              </Link>
+            </div>
+          </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
-            {user ? (
-              <>
-                {/* Show My Dashboard button only for seekers on properties page */}
-                {user.userType === 'SEEKER' && isPropertiesPage && (
-                  <Link
-                    href={getDashboardLink()}
-                    className="bg-primary-100 text-primary-600 px-4 py-2 rounded-md 
-                      hover:bg-primary-200 transition-colors flex items-center gap-2"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" 
-                      />
-                    </svg>
-                    My Dashboard
-                  </Link>
+          {/* Action Buttons */}
+          <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+            <button
+              onClick={handleAddProperty}
+              className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700"
+            >
+              Add Property
+            </button>
+
+            {session?.userType === 'SEEKER' && (
+              <button
+                onClick={handleSavedProperties}
+                className="px-4 py-2 text-sm font-medium text-primary-600 border border-primary-600 rounded-md hover:bg-primary-50"
+              >
+                Saved Properties
+              </button>
+            )}
+
+            {session ? (
+              <div className="relative ml-3">
+                <button
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600"
+                >
+                  {session.name}
+                  <svg className="ml-1 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+
+                {isMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div className="py-1">
+                      <Link
+                        href={`/dashboard/${session.userType.toLowerCase()}/${session.id}`}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={signOut}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
                 )}
-
-                {user.userType === 'OWNER' && (
-                  <Link
-                    href="/properties/new"
-                    className="text-gray-700 hover:text-primary-600 transition-colors"
-                  >
-                    Add Property
-                  </Link>
-                )}
-
-                <div className="flex items-center space-x-4">
-                  <span className="text-gray-700">Welcome, {user.name}</span>
-                  <button
-                    onClick={handleLogout}
-                    className="bg-primary-500 text-white px-4 py-2 rounded-md 
-                      hover:bg-primary-600 transition-colors flex items-center gap-2"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
-                      />
-                    </svg>
-                    Sign Out
-                  </button>
-                </div>
-              </>
+              </div>
             ) : (
-              <>
-                <Link
-                  href="/properties"
-                  className="text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  Find Properties
-                </Link>
-                <Link
-                  href="/auth/signin"
-                  className="text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition-colors"
-                >
-                  Sign Up
-                </Link>
-              </>
+              <Link
+                href="/auth/signin"
+                className="px-4 py-2 text-sm font-medium text-primary-600 border border-primary-600 rounded-md hover:bg-primary-50"
+              >
+                Sign In
+              </Link>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          {/* Mobile menu button */}
+          <div className="sm:hidden flex items-center">
             <button
-              type="button"
-              className="text-gray-500 hover:text-gray-600 p-3"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
             >
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Open main menu</span>
               <svg
-                className="h-6 w-6"
+                className={`${isMenuOpen ? 'hidden' : 'block'} h-6 w-6`}
+                xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                stroke="currentColor"
                 viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                {mobileMenuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <svg
+                className={`${isMenuOpen ? 'block' : 'hidden'} h-6 w-6`}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-2 bg-white">
-            <div className="flex flex-col space-y-2">
-              {user ? (
-                <>
-                  {user.userType === 'SEEKER' && isPropertiesPage && (
-                    <Link
-                      href={getDashboardLink()}
-                      className="flex items-center gap-2 text-primary-600 px-4 py-3"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" 
-                        />
-                      </svg>
-                      My Dashboard
-                    </Link>
-                  )}
-                  <Link
-                    href={getDashboardLink()}
-                    className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-3"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Dashboard
-                  </Link>
-                  {user.userType === 'OWNER' && (
-                    <Link
-                      href="/properties/new"
-                      className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-3"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Add Property
-                    </Link>
-                  )}
-                  <div className="px-4 py-3">
-                    <span className="block text-gray-700 mb-3">Welcome, {user.name}</span>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="bg-primary-500 text-white px-4 py-3 rounded-md hover:bg-primary-600 transition-colors w-full"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/properties"
-                    className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-3"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Find Properties
-                  </Link>
-                  <Link
-                    href="/auth/signin"
-                    className="text-gray-700 hover:text-primary-600 transition-colors px-4 py-3"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/auth/signup"
-                    className="bg-primary-500 text-white px-4 py-3 mx-4 mb-2 rounded-md hover:bg-primary-600 transition-colors text-center"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Sign Up
-                  </Link>
-                </>
+        {/* Mobile menu */}
+        {isMenuOpen && (
+          <div className="sm:hidden">
+            <div className="pt-2 pb-3 space-y-1">
+              <Link
+                href="/"
+                className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                Home
+              </Link>
+              <Link
+                href="/properties/flats"
+                className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                Flats
+              </Link>
+              <Link
+                href="/properties/pg"
+                className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                Paying Guest
+              </Link>
+              <Link
+                href="/about"
+                className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                About Us
+              </Link>
+              <button
+                onClick={handleAddProperty}
+                className="block w-full text-left pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              >
+                Add Property
+              </button>
+              {session?.userType === 'SEEKER' && (
+                <button
+                  onClick={handleSavedProperties}
+                  className="block w-full text-left pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                >
+                  Saved Properties
+                </button>
               )}
             </div>
           </div>

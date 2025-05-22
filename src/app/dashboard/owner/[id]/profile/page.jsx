@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import prisma from '@/app/lib/db';
 import ProfileForm from '@/app/components/dashboard/ProfileForm';
 import AccountSettings from '@/app/components/dashboard/AccountSettings';
+import DeleteAccount from '@/app/components/dashboard/DeleteAccount';
 
 export default async function OwnerProfile({ params: { id } }) {
   try {
@@ -76,6 +77,7 @@ export default async function OwnerProfile({ params: { id } }) {
           <div className="lg:col-span-2 space-y-6">
             <ProfileForm user={owner} />
             <AccountSettings userId={owner.id} />
+            <DeleteAccount userId={owner.id} />
           </div>
         </div>
       </div>

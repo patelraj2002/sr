@@ -39,6 +39,8 @@ export async function POST(request) {
       rules,
       available,
       price,
+      rentPaymentDate,
+      advanceDeposit,
       sharingOptions,
       images,
       address,
@@ -139,6 +141,8 @@ export async function POST(request) {
         rules: Array.isArray(rules) ? rules : [],
         available: new Date(available),
         price: type === 'FLAT' ? parseFloat(price) : null,
+        rentPaymentDate: parseInt(rentPaymentDate) || 1,
+        advanceDeposit: parseInt(advanceDeposit) || 1,
         ownerId,
 
         // Create address
