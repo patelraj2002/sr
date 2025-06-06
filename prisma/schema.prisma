@@ -14,6 +14,7 @@ model User {
   name            String
   email           String          @unique
   phone           String?    
+  alternatePhone  String?         // Added alternate phone number field
   password        String
   userType        UserType        @default(SEEKER)
   lastLoginAt     DateTime?

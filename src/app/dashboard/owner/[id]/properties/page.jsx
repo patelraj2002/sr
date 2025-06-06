@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default async function OwnerProperties({ params }) {
   const session = await getServerSession();
-  const id = await params.id;
+  const id = params.id;
   
   if (!session || session.id !== id) {
     redirect('/auth/signin');

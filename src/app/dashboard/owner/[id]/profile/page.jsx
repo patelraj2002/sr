@@ -20,6 +20,7 @@ export default async function OwnerProfile({ params: { id } }) {
         name: true,
         email: true,
         phone: true,
+        alternatePhone: true,
         lastLoginAt: true,
         createdAt: true,
         _count: {

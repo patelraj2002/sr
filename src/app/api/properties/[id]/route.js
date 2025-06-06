@@ -17,7 +17,8 @@ export async function GET(request, { params }) {
             id: true,
             name: true,
             email: true,
-            phone: true
+            phone: true,
+            alternatePhone: true
           }
         },
         address: true,
@@ -163,7 +164,8 @@ export async function PUT(request, { params }) {
             id: true,
             name: true,
             email: true,
-            phone: true
+            phone: true,
+            alternatePhone: true
           }
         }
       }

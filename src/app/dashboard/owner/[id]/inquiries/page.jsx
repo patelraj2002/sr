@@ -6,15 +6,16 @@ import InquiryList from '@/app/components/dashboard/InquiryList';
 
 export default async function OwnerInquiries({ params }) {
   const session = await getServerSession();
-  
-  if (!session || session.id !== params.id) {
+  const id = params.id;
+
+  if (!session || session.id !== id) {
     redirect('/auth/signin');
   }
 
   const inquiries = await prisma.inquiry.findMany({
     where: {
       property: {
-        ownerId: params.id
+        ownerId: id
       }
     },
     include: {
@@ -23,10 +24,14 @@ export default async function OwnerInquiries({ params }) {
           id: true,
           title: true,
           type: true,
+          location: true,
           images: {
-            where: { isMain: true },
-            take: 1
-          }
+            take: 1,
+            select: {
+              url: true
+            }
+          },
+          sharingOptions: true
         }
       }
     },
@@ -38,7 +43,7 @@ export default async function OwnerInquiries({ params }) {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Property Inquiries</h1>
-      <InquiryList inquiries={inquiries} ownerId={params.id} />
+      <InquiryList inquiries={inquiries} ownerId={id} />
     </div>
   );
 }

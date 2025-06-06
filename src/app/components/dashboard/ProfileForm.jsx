@@ -9,7 +9,8 @@ export default function ProfileForm({ user }) {
   const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
-    phone: user.phone || ''
+    phone: user.phone || '',
+    alternatePhone: user.alternatePhone || ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -20,7 +21,8 @@ export default function ProfileForm({ user }) {
     setError('');
 
     try {
-      const res = await fetch(`/api/users/${user.id}`, {
+      console.log('Submitting form data:', formData);
+      const res = await fetch(`/api/users/${user.id}/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -29,9 +31,12 @@ export default function ProfileForm({ user }) {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to update profile');
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to update profile');
       }
 
+      const data = await res.json();
+      console.log('Profile update response:', data);
       router.refresh();
     } catch (err) {
       setError(err.message);
@@ -95,8 +100,23 @@ export default function ProfileForm({ user }) {
               phone: e.target.value
             }))}
             className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-            pattern="[0-9]{10}"
-            title="Please enter a valid 10-digit phone number"
+            placeholder="Enter your primary phone number"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Alternate Phone Number
+          </label>
+          <input
+            type="tel"
+            value={formData.alternatePhone}
+            onChange={(e) => setFormData(prev => ({
+              ...prev,
+              alternatePhone: e.target.value
+            }))}
+            className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+            placeholder="Enter your alternate phone number (optional)"
           />
         </div>
 

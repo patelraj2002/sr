@@ -16,15 +16,20 @@ export async function PUT(request, { params }) {
     }
 
     const body = await request.json();
-    const { name, phone } = body;
+    const { name, phone, alternatePhone } = body;
+    
+    console.log('Updating profile with data:', { name, phone, alternatePhone });
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
         name,
-        phone
+        phone,
+        alternatePhone
       }
     });
+
+    console.log('Updated user:', updatedUser);
 
     return NextResponse.json({
       success: true,
@@ -33,6 +38,7 @@ export async function PUT(request, { params }) {
         name: updatedUser.name,
         email: updatedUser.email,
         phone: updatedUser.phone,
+        alternatePhone: updatedUser.alternatePhone,
         userType: updatedUser.userType
       }
     });

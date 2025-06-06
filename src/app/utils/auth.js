@@ -3,14 +3,15 @@ import { cookies } from 'next/headers';
 
 export async function getServerSession() {
   try {
-    const cookieStore = cookies();
-    const sessionCookie = await cookieStore.get('session');
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get('session');
 
     if (!sessionCookie?.value) {
       return null;
     }
 
-    return JSON.parse(sessionCookie.value);
+    const session = JSON.parse(sessionCookie.value);
+    return session;
   } catch (error) {
     console.error('Session error:', error);
     return null;

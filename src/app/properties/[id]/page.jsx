@@ -524,7 +524,12 @@ export default function PropertyPage({ params }) {
                       <span className="w-5 h-5 mr-3 text-gray-400">📞</span>
                       {property.owner.phone}
                     </p>
-
+                    {property.owner.alternatePhone && (
+                      <p className="flex items-center text-sm sm:text-base">
+                        <span className="w-5 h-5 mr-3 text-gray-400">📱</span>
+                        {property.owner.alternatePhone} (Alternate)
+                      </p>
+                    )}
                   </>
                 )}
               </div>
