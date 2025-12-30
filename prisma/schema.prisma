@@ -5,20 +5,12 @@ generator client {
 }
 
 datasource db {
-<<<<<<< HEAD
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 // Add a note to use prisma.config.ts for database connection
-
-=======
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
->>>>>>> a1a1d4c3f43d11237c33354a21e44ffdd1f48ad0
 model User {
   id              String          @id @default(cuid())
   name            String
