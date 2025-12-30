@@ -1,0 +1,142 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Removed `url` property from datasource block
+}
+
+model User {
+  id          String     @id @default(cuid())
+  name        String
+  email       String     @unique
+  phone       String? // Add phone field, make it optional with ?
+  password    String
+  userType    UserType   @default(SEEKER)
+  lastLoginAt DateTime? // Add this field
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  properties  Property[]
+}
+
+enum UserType {
+  SEEKER
+  OWNER
+}
+
+enum PropertyType {
+  PG
+  FLAT
+}
+
+enum PropertyStatus {
+  ACTIVE
+  RENTED
+  INACTIVE
+}
+
+enum InquiryStatus {
+  PENDING
+  RESPONDED
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+model Property {
+  id             String          @id @default(cuid())
+  title          String
+  description    String
+  price          Float? // Optional for PG properties
+  location       String
+  type           PropertyType    @default(PG)
+  status         PropertyStatus  @default(ACTIVE)
+  amenities      String[] // Array of amenities
+  rules          String[] // Array of rules
+  rooms          Int             @default(1)
+  bathrooms      Int             @default(1)
+  furnished      Boolean         @default(false)
+  available      DateTime        @default(now())
+  latitude       Float? // For map location
+  longitude      Float? // For map location
+  googleAddress  String? // Formatted address from Google
+  ownerId        String
+  owner          User            @relation(fields: [ownerId], references: [id])
+  address        Address? // Related address details
+  images         Image[] // Related property images
+  inquiries      Inquiry[] // Related inquiries
+  sharingOptions SharingOption[] // PG sharing options
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([type])
+  @@index([status])
+  @@index([location])
+  @@index([ownerId])
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  street     String
+  city       String
+  state      String
+  pincode    String
+  propertyId String   @unique
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([city])
+  @@index([propertyId])
+}
+
+model Image {
+  id         String   @id @default(cuid())
+  url        String
+  publicId   String // For cloud storage reference
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  isMain     Boolean  @default(false) // Flag for main/featured image
+  createdAt  DateTime @default(now())
+
+  @@index([propertyId])
+}
+
+model Inquiry {
+  id         String        @id @default(cuid())
+  propertyId String
+  property   Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  name       String
+  email      String
+  phone      String
+  message    String
+  status     InquiryStatus @default(PENDING)
+  visitDate  DateTime? // Requested property visit date
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([propertyId])
+  @@index([status])
+  @@index([email])
+}
+
+model SharingOption {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  persons    Int // Number of persons (2,3,4 etc.)
+  price      Float // Price per person
+  available  Int // Number of beds available
+  total      Int // Total beds in this sharing type
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([propertyId])
+  @@index([persons])
+  @@index([price])
+}
+
+// Add a note to use prisma.config.ts for database connection
