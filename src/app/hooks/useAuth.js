@@ -29,5 +29,5 @@ export function useAuth() {
     }
   };
 
-  return { user, loading, signOut };
+  return { session: user, loading, signOut };
 }
