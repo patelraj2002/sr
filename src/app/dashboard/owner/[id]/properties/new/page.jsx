@@ -5,8 +5,8 @@ import PropertyForm from '@/app/components/property/PropertyForm';
 
 export default async function NewProperty({ params }) {
   const session = await getServerSession();
-  const { id } = await params;
-
+  const id = params?.id;
+  
   if (!session || session.id !== id) {
     redirect('/auth/signin');
   }

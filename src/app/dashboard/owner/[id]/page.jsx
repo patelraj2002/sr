@@ -116,7 +116,7 @@ export default async function OwnerDashboard({ params }) {
           inquiries={recentInquiries}
           ownerId={id}
         />
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
