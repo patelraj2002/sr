@@ -17,19 +17,11 @@
     "bcryptjs": "^3.0.2",
     "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.8",
-<<<<<<< HEAD
-=======
-    "cloudinary": "^2.5.1",
->>>>>>> a1a1d4c3f43d11237c33354a21e44ffdd1f48ad0
     "critters": "^0.0.25",
     "date-fns": "^4.1.0",
     "heic-convert": "^2.1.0",
     "jsonwebtoken": "^9.0.2",
     "next": "latest",
-<<<<<<< HEAD
-=======
-    "next-cloudinary": "^6.16.0",
->>>>>>> a1a1d4c3f43d11237c33354a21e44ffdd1f48ad0
     "nodemailer": "^6.10.0",
     "react": "latest",
     "react-chartjs-2": "^5.3.0",
